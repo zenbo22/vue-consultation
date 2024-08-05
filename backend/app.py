@@ -4,7 +4,7 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)  # 允许所有来源
 
-@app.route('/api/getDoctorReply', methods=['POST'])
+@app.route('/ask', methods=['POST'])
 def get_doctor_reply():
     data = request.json
     # 处理请求并返回响应

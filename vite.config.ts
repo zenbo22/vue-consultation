@@ -31,6 +31,8 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
       })
     ],
     server: {
+      host: '0.0.0.0', // 允许所有网络接口访问
+      port: 5173,      // 确保端口号一致
       proxy: {
         /*  [env.VITE_APP_BASE_API]: {
           changeOrigin: true,

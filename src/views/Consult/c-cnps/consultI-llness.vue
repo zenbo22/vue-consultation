@@ -6,10 +6,14 @@ import { showConfirmDialog } from 'vant';
 import { useRouter } from 'vue-router';
 import type { ConsultIllness } from '@/types/consult';
 import { timeOptions, flagOptions } from '@/services/constants';
+import { v4 as uuidv4 } from 'uuid'; // 引入 uuid 库生成唯一标识符
+
 
 const consultStore = useConsultStore();
 const router = useRouter();
 
+
+const session_id = ref(uuidv4()); // 生成新的 session_id
 const form = ref<ConsultIllness>({
   illnessDesc: '',
   illnessTime: undefined,
@@ -18,11 +22,10 @@ const form = ref<ConsultIllness>({
 });
 
 const messages = ref([
-  { role: 'doctor', content: '您好，有什么不舒服的地方嘛？' }
+  { role: 'doctor', content: '您好，我可以帮助您什么嘛？' }
 ]);
 
 const chatContainer = ref<HTMLElement | null>(null);
-
 const sendMessage = (role: 'doctor' | 'user', content: string) => {
   messages.value.push({ role, content });
 };
@@ -34,6 +37,7 @@ const scrollToBottom = () => {
     chatContainer.value.scrollTop = chatContainer.value.scrollHeight;
   }
 };
+
 
 const handleSendMessage = async (content: string) => {
   if (!content.trim()) return; // 避免发送空消息
@@ -51,8 +55,11 @@ const handleSendMessage = async (content: string) => {
   sendMessage('doctor', '正在处理中...');
 
   try {
-    const response = await apiClient.post('/api/getDoctorReply', { message: content });
-    const doctorReply = response.data.reply;
+    const response = await apiClient.post('/ask', { 
+      message: content,
+      session_id: session_id.value
+    });
+    const doctorReply = response.data.response;
     // 移除加载中的占位符并显示医生的回复
     messages.value.pop(); // 移除 "正在处理中..." 的占位符
     sendMessage('doctor', doctorReply);
