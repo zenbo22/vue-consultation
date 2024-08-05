@@ -1,133 +1,108 @@
 <script setup lang="ts">
-import { useConsultStore } from '@/stores/modules/consult'
-import type { ConsultIllness, Image } from '@/types/consult'
-import { timeOptions, flagOptions } from '@/services/constants'
-import { showConfirmDialog } from 'vant'
-import { reqImg } from '@/api/consult/index'
-import type {
-  UploaderAfterRead,
-  UploaderFileListItem
-} from 'vant/lib/uploader/types'
-import { useRouter } from 'vue-router'
-const consultStore = useConsultStore()
-const router = useRouter()
+import { ref, computed, onMounted } from 'vue';
+import { useConsultStore } from '@/stores/modules/consult';
+import { showConfirmDialog } from 'vant';
+import { useRouter } from 'vue-router';
+import type { ConsultIllness } from '@/types/consult';
+import { timeOptions, flagOptions } from '@/services/constants';
+
+const consultStore = useConsultStore();
+const router = useRouter();
 
 const form = ref<ConsultIllness>({
   illnessDesc: '',
   illnessTime: undefined,
   consultFlag: undefined,
   pictures: []
-})
-const imageList = ref<Image[]>()
-// 按钮禁用状态
+});
+
+const messages = ref([
+  { role: 'doctor', content: '请描述你的疾病或症状、是否用药、就诊经历，需要我提供什么样的帮助' }
+]);
+
+const sendMessage = (role: 'doctor' | 'user', content: string) => {
+  messages.value.push({ role, content });
+};
+
+const handleSendMessage = (content: string) => {
+  sendMessage('user', content);
+  // 模拟医生回复
+  setTimeout(() => {
+    if (messages.value.length === 2) {
+      sendMessage('doctor', '本次患病多久了？');
+    } else if (messages.value.length === 4) {
+      sendMessage('doctor', '此次病情是否去医院就诊过？');
+    } else {
+      sendMessage('doctor', '请详细描述您的病情');
+    }
+  }, 1000);
+};
+
 const disabled = computed(() => {
   return (
     !form.value.illnessDesc ||
     form.value.illnessTime === undefined ||
     form.value.consultFlag === undefined
-  )
-})
-const handleAfterRead: UploaderAfterRead = (item) => {
-  if (Array.isArray(item)) return
-  if (!item.file) return
-  // 开始上传
-  item.status = 'uploading'
-  item.message = '上传中...'
-  reqImg(item.file)
-    .then((res) => {
-      item.status = 'done'
-      item.message = undefined
-      item.url = res.data.url
-      if (item.status !== 'done') {
-        imageList.value?.push(res.data)
-      }
-      form.value.pictures?.push(res.data)
-    })
-    .catch(() => {
-      item.status = 'failed'
-      item.message = '上传失败'
-    })
-}
-const handleDelImg = (file: UploaderFileListItem) => {
-  form.value.pictures = form.value.pictures?.filter(
-    (pic) => pic.url !== file.url
-  )
-}
+  );
+});
+
 const next = () => {
-  // 保存信息到pinia，跳转路由
-  consultStore.setIllness(form.value)
-  // 跳转家庭档案页面，如果为1代表作为选择患者使用
-  router.push('/user/patient?isSelect=1')
-}
-// 回显数据
+  consultStore.setIllness(form.value);
+  router.push('/user/patient?isSelect=1');
+};
+
 onMounted(() => {
   if (consultStore.consult.illnessDesc) {
     showConfirmDialog({
       title: '温馨提示',
       message: '是否恢复您之前填写的病情信息呢？',
-      // 是否在页面回退时自动关闭，默认值为true
       closeOnPopstate: false
     }).then(() => {
-      for (const key in form.value) {
-        ;(form.value as any)[key] = (consultStore.consult as any)[key]
-      }
-      form.value.pictures = consultStore.consult.pictures || []
-    })
+      Object.assign(form.value, consultStore.consult);
+    });
   }
-})
+});
+
+const inputMode = ref<'text' | 'voice'>('text');
+const inputContent = ref('');
+
+const toggleInputMode = () => {
+  inputMode.value = inputMode.value === 'text' ? 'voice' : 'text';
+};
 </script>
 
 <template>
   <div class="consult-illness-page">
     <cp-nav-bar title="图文问诊" />
-    <!-- 医生提示 -->
-    <div class="illness-tip van-hairline--bottom">
-      <img class="img" src="@/assets/avatar-doctor.svg" />
-      <div class="info">
-        <p class="tit">在线医生</p>
-        <p class="tip">
-          请描述你的疾病或症状、是否用药、就诊经历，需要我听过什么样的帮助
-        </p>
-        <p class="safe">
-          <cp-icon name="consult-safe" /><span>内容仅医生可见</span>
-        </p>
+    <div class="chat-window">
+      <div v-for="(message, index) in messages" :key="index" :class="['message', message.role]">
+        <img v-if="message.role === 'doctor'" class="avatar" src="@/assets/avatar-doctor.svg" alt="医生头像" />
+        <div class="content">{{ message.content }}</div>
       </div>
     </div>
-    <!-- 收集信息 -->
-    <div class="illness-form">
-      <!-- 病情描述 -->
+    <div class="input-area">
+      <van-icon
+        name="microphone-o"
+        v-if="inputMode === 'text'"
+        @click="toggleInputMode"
+      />
+      <van-icon
+        name="keyboard-o"
+        v-if="inputMode === 'voice'"
+        @click="toggleInputMode"
+      />
       <van-field
-        type="textarea"
-        rows="3"
-        placeholder="请详细描述您的病情，病情描述不能为空"
-        v-model="form.illnessDesc"
-      ></van-field>
-      <div class="item">
-        <p>本次患病多久了？</p>
-        <cp-radio-btn
-          :options="timeOptions"
-          v-model="form.illnessTime"
-        ></cp-radio-btn>
-      </div>
-      <div class="item">
-        <p>此次病情是否去医院就诊过？</p>
-        <cp-radio-btn :options="flagOptions" v-model="form.consultFlag" />
-      </div>
-      <div class="illness-img">
-        <van-uploader
-          v-model="imageList"
-          upload-icon="photo-o"
-          max-count="9"
-          max-size="1024*1024*5"
-          upload-text="上传图片"
-          @delete="handleDelImg"
-          :after-read="handleAfterRead"
-        ></van-uploader>
-        <p class="tip">上传内容仅医生可见,最多9张图,最大5MB</p>
-      </div>
-      <van-button block round :disabled="disabled" type="primary" @click="next"
-        >下一步</van-button
-      >
+        v-model="inputContent"
+        v-if="inputMode === 'text'"
+        placeholder="输入你的问题"
+        @keypress.enter="handleSendMessage(inputContent)"
+      />
+      <van-button v-if="inputMode === 'text'" type="primary" @click="handleSendMessage(inputContent)">
+        发送
+      </van-button>
+      <van-button v-if="inputMode === 'voice'" type="primary">
+        语音输入
+      </van-button>
     </div>
   </div>
 </template>
@@ -135,93 +110,65 @@ onMounted(() => {
 <style lang="scss" scoped>
 .consult-illness-page {
   padding-top: 46px;
-}
-.illness-tip {
   display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.chat-window {
+  flex: 1;
+  overflow-y: auto;
   padding: 15px;
-  .img {
-    width: 52px;
-    height: 52px;
-    border-radius: 4px;
-    overflow: hidden;
-    margin-top: 10px;
-  }
-  .info {
-    flex: 1;
-    padding-left: 12px;
-    .tit {
-      font-size: 16px;
-      margin-bottom: 5px;
+  padding-bottom: 70px; // 给输入区域留出空间
+  .message {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 10px;
+    &.doctor {
+      .avatar {
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        margin-right: 10px;
+      }
+      .content {
+        background: #f0f0f0;
+        padding: 10px;
+        border-radius: 10px;
+      }
     }
-    .tip {
-      padding: 12px;
-      background: var(--cp-bg);
-      color: var(--cp-text3);
-      font-size: 13px;
-      margin-bottom: 10px;
-    }
-    .safe {
-      font-size: 10px;
-      color: var(--cp-text3);
-      display: flex;
-      align-items: center;
-      .cp-icon {
-        font-size: 12px;
-        margin-right: 2px;
+    &.user {
+      justify-content: flex-end;
+      .content {
+        background: #007bff;
+        color: white;
+        padding: 10px;
+        border-radius: 10px;
       }
     }
   }
 }
-.illness-form {
-  padding: 15px;
-  .van-field {
-    padding: 0;
-    &::after {
-      border-bottom: none;
-    }
-  }
-  .item {
-    > p {
-      color: var(--cp-text3);
-      padding: 15px 0;
-    }
-  }
-}
-.illness-img {
-  padding-top: 16px;
-  margin-bottom: 40px;
+
+.input-area {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
   display: flex;
   align-items: center;
-  .tip {
-    font-size: 12px;
-    color: var(--cp-tip);
+  padding: 10px;
+  background: white;
+  border-top: 1px solid #eaeaea;
+  .van-icon {
+    font-size: 24px;
+    margin-right: 10px;
   }
-  ::v-deep() {
-    .van-uploader {
-      &__preview {
-        &-delete {
-          left: -6px;
-          top: -6px;
-          border-radius: 50%;
-          background-color: var(--cp-primary);
-          width: 20px;
-          height: 20px;
-          &-icon {
-            transform: scale(0.9) translate(-22%, 22%);
-          }
-        }
-        &-image {
-          border-radius: 8px;
-          overflow: hidden;
-        }
-      }
-      &__upload {
-        border-radius: 8px;
-      }
-      &__upload-icon {
-        color: var(--cp-text3);
-      }
-    }
+  .van-field {
+    flex: 1;
+    margin-right: 10px;
+  }
+  .van-button {
+    margin-left: 10px;
   }
 }
 </style>

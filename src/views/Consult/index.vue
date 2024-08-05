@@ -15,16 +15,16 @@ const consultStore = useConsultStore()
       <router-link to="/consult/dep" class="item" @click="consultStore.setIllnessType(1)">
         <cp-icon class="pic" name="consult-doctor"></cp-icon>
         <div class="info">
-          <p>三甲图文问诊</p>
-          <p>三甲主治及以上级别医生</p>
+          <p>文字问诊</p>
+          <p>通过文字交流快速初诊</p>
         </div>
         <van-icon name="arrow"></van-icon>
       </router-link>
       <router-link to="/consult/dep" class="item" @click="consultStore.setIllnessType(0)">
         <cp-icon class="pic" name="consult-message"></cp-icon>
         <div class="info">
-          <p>普通图文问诊</p>
-          <p>二甲主治及以上级别医生</p>
+          <p>电话问诊</p>
+          <p>通过电话交流快速初诊</p>
         </div>
         <van-icon name="arrow"></van-icon>
       </router-link>
