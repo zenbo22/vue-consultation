@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, nextTick } from 'vue';
+import apiClient from '@/services/apiClient';
 import { useConsultStore } from '@/stores/modules/consult';
 import { showConfirmDialog } from 'vant';
 import { useRouter } from 'vue-router';
@@ -17,25 +18,57 @@ const form = ref<ConsultIllness>({
 });
 
 const messages = ref([
-  { role: 'doctor', content: '请描述你的疾病或症状、是否用药、就诊经历，需要我提供什么样的帮助' }
+  { role: 'doctor', content: '您好，有什么不舒服的地方嘛？' }
 ]);
+
+const chatContainer = ref<HTMLElement | null>(null);
 
 const sendMessage = (role: 'doctor' | 'user', content: string) => {
   messages.value.push({ role, content });
 };
 
-const handleSendMessage = (content: string) => {
+const showLoading = ref(false);
+
+const scrollToBottom = () => {
+  if (chatContainer.value) {
+    chatContainer.value.scrollTop = chatContainer.value.scrollHeight;
+  }
+};
+
+const handleSendMessage = async (content: string) => {
+  if (!content.trim()) return; // 避免发送空消息
+
+  // 发送用户消息并清空输入框内容
   sendMessage('user', content);
-  // 模拟医生回复
-  setTimeout(() => {
-    if (messages.value.length === 2) {
-      sendMessage('doctor', '本次患病多久了？');
-    } else if (messages.value.length === 4) {
-      sendMessage('doctor', '此次病情是否去医院就诊过？');
-    } else {
-      sendMessage('doctor', '请详细描述您的病情');
-    }
-  }, 1000);
+  inputContent.value = '';
+
+  // 确保 UI 更新并滚动到底部
+  await nextTick();
+  scrollToBottom();
+
+  // 显示加载中的占位符
+  showLoading.value = true;
+  sendMessage('doctor', '正在处理中...');
+
+  try {
+    const response = await apiClient.post('/api/getDoctorReply', { message: content });
+    const doctorReply = response.data.reply;
+    // 移除加载中的占位符并显示医生的回复
+    messages.value.pop(); // 移除 "正在处理中..." 的占位符
+    sendMessage('doctor', doctorReply);
+  } catch (error) {
+    console.error('Error fetching doctor reply:', error);
+    // 移除加载中的占位符并显示错误信息
+    messages.value.pop(); // 移除 "正在处理中..." 的占位符
+    sendMessage('doctor', '抱歉，无法获取医生回复，请稍后再试。');
+  } finally {
+    // 隐藏加载中的占位符
+    showLoading.value = false;
+  }
+
+  // 再次确保 UI 更新并滚动到底部
+  await nextTick();
+  scrollToBottom();
 };
 
 const disabled = computed(() => {
@@ -52,6 +85,10 @@ const next = () => {
 };
 
 onMounted(() => {
+  // 初次加载时滚动到底部
+  // nextTick(() => {
+  //   scrollToBottom();
+  // });
   if (consultStore.consult.illnessDesc) {
     showConfirmDialog({
       title: '温馨提示',
@@ -69,15 +106,19 @@ const inputContent = ref('');
 const toggleInputMode = () => {
   inputMode.value = inputMode.value === 'text' ? 'voice' : 'text';
 };
+
 </script>
 
 <template>
   <div class="consult-illness-page">
-    <cp-nav-bar title="图文问诊" />
-    <div class="chat-window">
+    <cp-nav-bar title="在线问诊" />
+    <div class="chat-window" ref="chatContainer">
       <div v-for="(message, index) in messages" :key="index" :class="['message', message.role]">
         <img v-if="message.role === 'doctor'" class="avatar" src="@/assets/avatar-doctor.svg" alt="医生头像" />
-        <div class="content">{{ message.content }}</div>
+        <div class="content">
+          <div v-if="message.content === '正在处理中...'" class="loading-spinner"></div>
+          <div v-else>{{ message.content }}</div>
+        </div>
       </div>
     </div>
     <div class="input-area">
@@ -120,10 +161,13 @@ const toggleInputMode = () => {
   overflow-y: auto;
   padding: 15px;
   padding-bottom: 70px; // 给输入区域留出空间
+  position: relative; // 确保滚动容器的高度计算正确
+
   .message {
     display: flex;
     align-items: flex-start;
     margin-bottom: 10px;
+
     &.doctor {
       .avatar {
         width: 52px;
@@ -135,8 +179,19 @@ const toggleInputMode = () => {
         background: #f0f0f0;
         padding: 10px;
         border-radius: 10px;
+
+        .loading-spinner {
+          border: 4px solid #f0f0f0; /* Light grey */
+          border-top: 4px solid #007bff; /* Blue */
+          border-radius: 50%;
+          width: 24px;
+          height: 24px;
+          animation: spin 1s linear infinite;
+          margin: auto;
+        }
       }
     }
+
     &.user {
       justify-content: flex-end;
       .content {
@@ -149,6 +204,11 @@ const toggleInputMode = () => {
   }
 }
 
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 .input-area {
   position: fixed;
   bottom: 0;
@@ -159,14 +219,17 @@ const toggleInputMode = () => {
   padding: 10px;
   background: white;
   border-top: 1px solid #eaeaea;
+  
   .van-icon {
     font-size: 24px;
     margin-right: 10px;
   }
+  
   .van-field {
     flex: 1;
     margin-right: 10px;
   }
+  
   .van-button {
     margin-left: 10px;
   }
