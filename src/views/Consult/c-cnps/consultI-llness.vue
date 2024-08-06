@@ -132,7 +132,13 @@ const handleGenerateReport = async () => {
           <div v-if="message.content === '正在处理中...'" class="loading-spinner"></div>
           <div v-else v-html="message.content"></div>
           <!-- 添加按钮 -->
-          <van-button v-if="message.role === 'doctor'" type="primary" size="mini" class="generate-report" @click="handleGenerateReport">
+          <van-button
+            v-if="message.role === 'doctor'"
+            type="primary"
+            size="mini"
+            class="generate-report"
+            @click="handleGenerateReport"
+          >
             生成电子病历
           </van-button>
         </div>
@@ -165,6 +171,7 @@ const handleGenerateReport = async () => {
   </div>
 </template>
 
+
 <style lang="scss" scoped>
 .consult-illness-page {
   padding-top: 46px;
@@ -184,6 +191,7 @@ const handleGenerateReport = async () => {
     display: flex;
     align-items: flex-start;
     margin-bottom: 10px;
+    position: relative; // 使子元素可以绝对定位
 
     &.doctor {
       .avatar {
@@ -195,8 +203,10 @@ const handleGenerateReport = async () => {
       .content {
         background: #f0f0f0;
         padding: 10px;
+        padding-bottom: 40px; /* 留出空间用于按钮 */
         border-radius: 10px;
-
+        position: relative; /* 使按钮可以绝对定位于此容器 */
+        
         .loading-spinner {
           border: 4px solid #f0f0f0; /* Light grey */
           border-top: 4px solid #007bff; /* Blue */
@@ -205,6 +215,20 @@ const handleGenerateReport = async () => {
           height: 24px;
           animation: spin 1s linear infinite;
           margin: auto;
+        }
+        
+        .van-button.generate-report {
+          position: absolute;
+          bottom: 10px; /* 距离底部的距离 */
+          right: 10px;  /* 距离右侧的距离 */
+          background: linear-gradient(45deg, #007bff, #00c853); /* 渐变背景色 */
+          color: white;
+          border-radius: 20px; /* 圆角 */
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 阴影 */
+          
+          &:hover {
+            background: linear-gradient(45deg, #0056b3, #009624); /* 悬停时背景色 */
+          }
         }
       }
     }
@@ -249,17 +273,6 @@ const handleGenerateReport = async () => {
   
   .van-button {
     margin-left: 10px;
-  }
-}
-
-.van-button.generate-report {
-  background: linear-gradient(45deg, #007bff, #00c853); /* 渐变背景色 */
-  color: white;
-  border-radius: 20px; /* 圆角 */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 阴影 */
-  
-  &:hover {
-    background: linear-gradient(45deg, #0056b3, #009624); /* 悬停时背景色 */
   }
 }
 </style>
