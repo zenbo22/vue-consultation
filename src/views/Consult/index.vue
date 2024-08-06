@@ -9,14 +9,14 @@ const consultStore = useConsultStore()
     <cp-nav-bar title="极速问诊" right_title="问诊记录"></cp-nav-bar>
     <div class="fast-logo">
       <img class="img" src="@/assets/consult-fast.png" alt="" />
-      <p class="text"><span>20s</span> 快速匹配专业医生</p>
+      <p class="text"><span>1min</span> 快速判断自己的身体情况</p>
     </div>
     <div class="fast-type">
-      <router-link to="/consult/dep" class="item" @click="consultStore.setIllnessType(1)">
+      <router-link to="/consult/illness" class="item" @click="consultStore.setIllnessType(1)">
         <cp-icon class="pic" name="consult-doctor"></cp-icon>
         <div class="info">
-          <p>文字问诊</p>
-          <p>通过文字交流快速初诊</p>
+          <p>AI快速问诊</p>
+          <p>通过AI分身快速初诊来判断自己是否需要去医院做详细检测</p>
         </div>
         <van-icon name="arrow"></van-icon>
       </router-link>
@@ -24,7 +24,7 @@ const consultStore = useConsultStore()
         <cp-icon class="pic" name="consult-message"></cp-icon>
         <div class="info">
           <p>电话问诊</p>
-          <p>通过电话交流快速初诊</p>
+          <p>通过电话交流快速初诊来判断自己是否需要去医院做详细检测</p>
         </div>
         <van-icon name="arrow"></van-icon>
       </router-link>

@@ -7,6 +7,7 @@ import { useRouter } from 'vue-router';
 import type { ConsultIllness } from '@/types/consult';
 import { timeOptions, flagOptions } from '@/services/constants';
 import { v4 as uuidv4 } from 'uuid'; // 引入 uuid 库生成唯一标识符
+import { marked } from 'marked';
 
 
 const consultStore = useConsultStore();
@@ -59,7 +60,7 @@ const handleSendMessage = async (content: string) => {
       message: content,
       session_id: session_id.value
     });
-    const doctorReply = response.data.response;
+    const doctorReply = marked(response.data.response);
     // 移除加载中的占位符并显示医生的回复
     messages.value.pop(); // 移除 "正在处理中..." 的占位符
     sendMessage('doctor', doctorReply);
@@ -67,7 +68,7 @@ const handleSendMessage = async (content: string) => {
     console.error('Error fetching doctor reply:', error);
     // 移除加载中的占位符并显示错误信息
     messages.value.pop(); // 移除 "正在处理中..." 的占位符
-    sendMessage('doctor', '抱歉，无法获取医生回复，请稍后再试。');
+    sendMessage('doctor', marked('抱歉，无法获取医生回复，请稍后再试。'));
   } finally {
     // 隐藏加载中的占位符
     showLoading.value = false;
@@ -118,13 +119,13 @@ const toggleInputMode = () => {
 
 <template>
   <div class="consult-illness-page">
-    <cp-nav-bar title="在线问诊" />
+    <cp-nav-bar title="AI家庭医生" />
     <div class="chat-window" ref="chatContainer">
       <div v-for="(message, index) in messages" :key="index" :class="['message', message.role]">
         <img v-if="message.role === 'doctor'" class="avatar" src="@/assets/avatar-doctor.svg" alt="医生头像" />
         <div class="content">
           <div v-if="message.content === '正在处理中...'" class="loading-spinner"></div>
-          <div v-else>{{ message.content }}</div>
+          <div v-else v-html="message.content"></div>
         </div>
       </div>
     </div>
