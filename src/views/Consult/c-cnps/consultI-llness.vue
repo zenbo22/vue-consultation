@@ -133,7 +133,7 @@ const handleGenerateReport = async () => {
           <div v-else v-html="message.content"></div>
           <!-- 添加按钮 -->
           <van-button
-            v-if="message.role === 'doctor'"
+            v-if="message.role === 'doctor' && message.content !== '正在处理中...' && message.content !== '抱歉，无法获取医生回复，请稍后再试。'"
             type="primary"
             size="mini"
             class="generate-report"
@@ -220,14 +220,16 @@ const handleGenerateReport = async () => {
         .van-button.generate-report {
           position: absolute;
           bottom: 10px; /* 距离底部的距离 */
-          right: 10px;  /* 距离右侧的距离 */
-          background: linear-gradient(45deg, #007bff, #00c853); /* 渐变背景色 */
+          right: 20px;  /* 距离右侧的距离 */
+          background: #777; /* 深灰色背景 *//* background: linear-gradient(45deg, #007bff, #00c853); 渐变背景色 */
           color: white;
-          border-radius: 20px; /* 圆角 */
-          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 阴影 */
+          border: 1px solid #777; 
+          border-radius: 5px; /* 圆角 */
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* 阴影 */
           
           &:hover {
-            background: linear-gradient(45deg, #0056b3, #009624); /* 悬停时背景色 */
+            background: #888;  /*background: linear-gradient(45deg, #0056b3, #009624); /* 悬停时背景色 */
+            border: 1px solid #888; 
           }
         }
       }
