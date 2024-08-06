@@ -115,6 +115,11 @@ const toggleInputMode = () => {
   inputMode.value = inputMode.value === 'text' ? 'voice' : 'text';
 };
 
+// 新增函数
+const handleGenerateReport = async () => {
+  await handleSendMessage('生成电子病历');
+};
+
 </script>
 
 <template>
@@ -126,6 +131,10 @@ const toggleInputMode = () => {
         <div class="content">
           <div v-if="message.content === '正在处理中...'" class="loading-spinner"></div>
           <div v-else v-html="message.content"></div>
+          <!-- 添加按钮 -->
+          <van-button v-if="message.role === 'doctor'" type="primary" size="mini" class="generate-report" @click="handleGenerateReport">
+            生成电子病历
+          </van-button>
         </div>
       </div>
     </div>
@@ -240,6 +249,17 @@ const toggleInputMode = () => {
   
   .van-button {
     margin-left: 10px;
+  }
+}
+
+.van-button.generate-report {
+  background: linear-gradient(45deg, #007bff, #00c853); /* 渐变背景色 */
+  color: white;
+  border-radius: 20px; /* 圆角 */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 阴影 */
+  
+  &:hover {
+    background: linear-gradient(45deg, #0056b3, #009624); /* 悬停时背景色 */
   }
 }
 </style>
