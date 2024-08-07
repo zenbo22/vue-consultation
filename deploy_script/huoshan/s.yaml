@@ -1,0 +1,42 @@
+edition: 3.0.0
+name: doctor-hao
+access: "default-volcano" # todo: 在系统下新建火山引擎的 AK / SK 密钥
+
+vars:
+  sid: "doctor"
+  region: "cn-beijing"
+  functionName: "doctor-function"
+
+resources:
+  doctor-hao:
+    component: volcano-vefaas@1.4.3
+    props:
+      common:
+        Region: ${vars.region}
+      function:
+        Name: ${vars.functionName}
+        Description: 郝医生的前端服务
+        RequestTimeout: 600
+        Runtime: native/v1
+        SourceType: image # 支持 image / zip
+        Source: dcc-cloud-cn-beijing.cr.volces.com/dcc-cloud/doctor-hao:0.0.1
+        MemoryMB: 16384
+        Processor: cpu
+      replicaLimit:
+        MaxInstance: 100
+      triggers:
+        - TriggerName: apig-trigger
+          TriggerType: apig
+          GatewayId: "gcp1jht7vgc9hjb8nftb0" # todo: 新建 apig 后填写 gatewayId 即可
+          ServiceName: "service-doctor"
+          UpstreamName: "upstream-doctor"
+          RouteName: default
+          Path: "/"
+          Method:
+            - POST
+            - GET
+            - PUT
+            - DELETE
+            - HEAD
+            - OPTIONS
+            - CONNECT
