@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ConsultOrderItem } from '@/types/consult'
+import type { ConsultOrderItem } from '@/types/consult.d.ts'
 import { OrderType } from '@/enum'
 import CpConsultMore from './consult-more.vue'
 import { useShowPrescription } from '@/hooks/useShowPrescription'
@@ -38,7 +38,7 @@ const handleSaveOrder = () => {
         >{{ item.statusValue }}</span
       >
     </div>
-    <div class="body" @click="$router.push(`/user/consult/${item.id}`)">
+    <div class="body" @click="router.push(`/user/consult/${item.id}`)">
       <div class="body-row">
         <div class="body-label">病情描述</div>
         <div class="body-value">{{ item.illnessDesc }}</div>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ConsultType } from '@/enum'
 import ConsultItem from './consult-item.vue'
-import type { ConsultOrderItem, ConsultOrderListParams } from '@/types/consult'
+import type { ConsultOrderItem, ConsultOrderListParams } from '@/types/consult.d.ts'
 import { reqOrderList } from '@/api/consult'
 const list = ref<ConsultOrderItem[]>([])
 const props = defineProps<{

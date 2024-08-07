@@ -5,11 +5,12 @@ import type { Logistics, Location } from '@/types/medicine'
 import carImg from '@/assets/car.png'
 import startImg from '@/assets/start.png'
 import endImg from '@/assets/end.png'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter  } from 'vue-router'
 import AMapLoader from '@amap/amap-jsapi-loader'
 // 获取物流信息
 const logistics = ref<Logistics>()
 const route = useRoute()
+const router = useRouter();
 /** 绘制高德地图物流轨迹 */
 // 配置安全密钥jscode
 window._AMapSecurityConfig = {
@@ -97,7 +98,7 @@ onMounted(async () => {
   <div class="order-logistics-page">
     <div id="map">
       <div class="title">
-        <van-icon name="arrow-left" @click="$router.back()" />
+        <van-icon name="arrow-left" @click="router.back()" />
         <span>{{ logistics?.statusValue }}</span>
         <van-icon name="service" />
       </div>

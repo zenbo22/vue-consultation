@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import doctorCard from './doctor-card.vue'
 import { reqFollowDoctor } from '@/api/consult/index'
-import type { FOLLOW_DOCTOR_DATA } from '@/types/consult'
+import type { FOLLOW_DOCTOR_DATA } from '@/types/consult.d.ts'
 // 使用vueuse 动态获取屏幕宽度，使轮播图适配
 // 使用150/375的比例，再去乘上当前屏幕的宽度，就是轮播图的宽度
 import { useWindowSize } from '@vueuse/core'

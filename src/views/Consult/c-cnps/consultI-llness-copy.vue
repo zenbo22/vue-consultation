@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useConsultStore } from '@/stores/modules/consult'
-import type { ConsultIllness, Image } from '@/types/consult'
+import type { ConsultIllness, Image } from '@/types/consult.d.ts'
 import { timeOptions, flagOptions } from '@/services/constants'
 import { showConfirmDialog } from 'vant'
 import { reqImg } from '@/api/consult/index'

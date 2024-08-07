@@ -1,5 +1,5 @@
 import { reqFollow } from '@/api/consult'
-import type { FOLLOW_TYPE } from '@/types/consult'
+import type { FOLLOW_TYPE } from '@/types/consult.d.ts'
 
 // 抽离关注需求的业务代码
 export const useFollow = (type: FOLLOW_TYPE = 'doc') => {

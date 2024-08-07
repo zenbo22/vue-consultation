@@ -1,6 +1,6 @@
 <!-- 消息卡片组件，根据消息类型判断显示不同消息卡片 -->
 <script setup lang="ts">
-import { type FOLLOW_DOCTOR_DATA, type Image } from '@/types/consult'
+import type { FOLLOW_DOCTOR_DATA, Image } from '@/types/consult.d.ts'
 import { getIllnessTimeText, getConsultFlagText } from '@/utils/filter'
 import EvaluateCard from './evaluate-card.vue'
 import dayjs from 'dayjs'

@@ -1,7 +1,7 @@
 // 抽取取消订单代码
 import { reqCancelOrder } from '@/api/consult'
 import { OrderType } from '@/enum'
-import type { ConsultOrderItem } from '@/types/consult'
+import type { ConsultOrderItem } from '@/types/consult.d.ts'
 import type { MedicineInfo, OrderDetail } from '@/types/medicine'
 import { showFailToast, showSuccessToast } from 'vant'
 

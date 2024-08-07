@@ -1,26 +1,20 @@
-# 使用官方 Node.js 的 Docker 镜像作为基础镜像
-FROM node:18.20.1
+# 使用官方 Nginx 镜像作为基础镜像
+FROM nginx:latest
 
-# 设置工作目录为 /app
-WORKDIR /app
+# 设置工作目录为 /usr/share/nginx/html，这是 Nginx 默认的静态文件目录
+WORKDIR /usr/share/nginx/html
 
-# 将 package.json 和 package-lock.json 复制到工作目录
-COPY package.json package-lock.json ./
+# 将构建的 Vue 应用静态文件复制到容器中的 Nginx 默认静态文件目录
+COPY dist .
 
-# 安装项目依赖
-RUN npm install
+# 可以使用 COPY 指令复制自定义的 Nginx 配置文件（如果需要）
+# COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# 如果你的项目需要全局安装 Vue CLI，可以取消下面一行的注释
-# RUN npm install -g @vue/cli
+# 清除默认的 Nginx 配置文件（如果之前复制了自定义配置则不需要此步骤）
+# RUN rm /etc/nginx/conf.d/default.conf
 
-# 将项目文件复制到工作目录
-COPY . .
+# 暴露 80 端口供外部访问
+EXPOSE 80
 
-# 构建项目，这里假设你的构建命令是 npm run build
-RUN npm run build --no-eslint 
-
-# 端口映射，根据你的应用配置适当端口
-EXPOSE 5173
-
-# 启动应用，根据你的应用配置适当的启动命令
-CMD ["npm", "run", "serve"]
+# 启动 Nginx 服务
+CMD ["nginx", "-g", "daemon off;"]

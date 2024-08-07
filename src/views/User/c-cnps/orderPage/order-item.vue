@@ -27,7 +27,7 @@ const handleSaveOrder = () => {
   <div class="consult-item">
     <cp-medicines
       :medicines="item.medicines"
-      @click="$router.push(`/user/order/${item.id}`)"
+      @click="router.push(`/user/order/${item.id}`)"
     ></cp-medicines>
     <div class="order-price">药品总价:{{ item.actualPayment }}</div>
     <div class="foot" v-if="item.status === OrderType.MedicinePay">

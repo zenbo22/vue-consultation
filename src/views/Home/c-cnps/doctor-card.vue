@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useFollow } from '@/hooks/useFollow'
-import type { FOLLOW_DOCTOR_DATA } from '@/types/consult'
+import type { FOLLOW_DOCTOR_DATA } from '@/types/consult.d.ts'
 const { loading, follow } = useFollow('doc')
 defineProps<{ item: FOLLOW_DOCTOR_DATA }>()
 </script>

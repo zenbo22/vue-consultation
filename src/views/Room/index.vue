@@ -10,11 +10,11 @@ import useUserStore from '@/stores/modules/user'
 import type { Message, TimeMessages } from '@/types/room'
 import { MsgType } from '@/enum'
 import { reqConsultStatus } from '@/api/consult'
-import {
-  type FOLLOW_DOCTOR_DATA,
-  type ConsultOrderItem,
-  type Image
-} from '@/types/consult'
+import type {
+  FOLLOW_DOCTOR_DATA,
+  ConsultOrderItem,
+  Image
+} from '@/types/consult.d.ts'
 import dayjs from 'dayjs'
 import { showFailToast } from 'vant'
 

@@ -1,5 +1,5 @@
 import { reqDelOrder } from '@/api/consult'
-import type { ConsultOrderItem } from '@/types/consult'
+import type { ConsultOrderItem } from '@/types/consult.d.ts'
 import type { MedicineInfo, OrderDetail } from '@/types/medicine'
 import { showFailToast, showSuccessToast } from 'vant'
 

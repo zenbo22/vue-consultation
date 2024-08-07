@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { reqDepALl } from '@/api/consult'
 import { useConsultStore } from '@/stores/modules/consult'
-import type { TopDep } from '@/types/consult'
+import type { TopDep } from '@/types/consult.d.ts'
 const consultStore = useConsultStore()
 import { ref } from 'vue'
 const active = ref(0)

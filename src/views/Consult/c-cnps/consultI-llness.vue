@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, nextTick } from 'vue';
+import { ref, onMounted, nextTick } from 'vue';
 import apiClient from '@/services/apiClient';
 import { useConsultStore } from '@/stores/modules/consult';
 import { showConfirmDialog } from 'vant';
-import { useRouter } from 'vue-router';
-import type { ConsultIllness } from '@/types/consult';
+// import { useRouter } from 'vue-router';
+import type { ConsultIllness } from '@/types/consult.d.ts';
 // import { timeOptions, flagOptions } from '@/services/constants';
 import { v4 as uuidv4 } from 'uuid'; // 引入 uuid 库生成唯一标识符
 import { marked } from 'marked';
 
 
 const consultStore = useConsultStore();
-const router = useRouter();
+// const router = useRouter();
 
 
 const session_id = ref(uuidv4()); // 生成新的 session_id
@@ -60,7 +60,7 @@ const handleSendMessage = async (content: string) => {
       message: content,
       session_id: session_id.value
     });
-    const doctorReply = marked(response.data.response);
+    const doctorReply =await marked(response.data.response);
     // 移除加载中的占位符并显示医生的回复
     messages.value.pop(); // 移除 "正在处理中..." 的占位符
     sendMessage('doctor', doctorReply);
@@ -68,7 +68,7 @@ const handleSendMessage = async (content: string) => {
     console.error('Error fetching doctor reply:', error);
     // 移除加载中的占位符并显示错误信息
     messages.value.pop(); // 移除 "正在处理中..." 的占位符
-    sendMessage('doctor', marked('抱歉，无法获取医生回复，请稍后再试。'));
+    sendMessage('doctor', '抱歉，无法获取医生回复，请稍后再试。');
   } finally {
     // 隐藏加载中的占位符
     showLoading.value = false;
@@ -77,19 +77,6 @@ const handleSendMessage = async (content: string) => {
   // 再次确保 UI 更新并滚动到底部
   await nextTick();
   scrollToBottom();
-};
-
-const disabled = computed(() => {
-  return (
-    !form.value.illnessDesc ||
-    form.value.illnessTime === undefined ||
-    form.value.consultFlag === undefined
-  );
-});
-
-const next = () => {
-  consultStore.setIllness(form.value);
-  router.push('/user/patient?isSelect=1');
 };
 
 onMounted(() => {

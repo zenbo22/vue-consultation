@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { HOMEINFO_ROW } from '@/types/consult'
+import type { HOMEINFO_ROW } from '@/types/consult.d.ts'
 import { useFollow } from '@/hooks/useFollow'
 const { loading, follow } = useFollow('doc')
 defineProps<{ item: HOMEINFO_ROW }>()

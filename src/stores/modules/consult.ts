@@ -1,5 +1,5 @@
 import type { ConsultType } from '@/enum'
-import type { PartialConsult } from '@/types/consult'
+import type { PartialConsult } from '@/types/consult.d.ts'
 import type { PATIENTS_DATA } from '@/types/user'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'

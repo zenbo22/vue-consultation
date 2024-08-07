@@ -1,7 +1,7 @@
 <!-- 医生评价组件 -->
 <script setup lang="ts">
 import { reqEvaluateConsultOrder } from '@/api/consult'
-import type { ConsultOrderItem } from '@/types/consult'
+import type { ConsultOrderItem } from '@/types/consult.d.ts'
 import type { EvaluateDoc } from '@/types/room'
 import { showToast } from 'vant'
 

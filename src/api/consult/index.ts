@@ -16,7 +16,7 @@ import type {
   RES_PRECRIPTION_DATA,
   ConsultOrderListParams,
   RES_CONSULT_LIST
-} from '@/types/consult'
+} from '@/types/consult.d.ts'
 import { request } from '@/utils/request'
 enum API {
   /** 获取首页的各个模块的信息 */

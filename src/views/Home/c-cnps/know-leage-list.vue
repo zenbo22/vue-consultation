@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { KnowledgeType, HOMEINFO_ROW } from '@/types/consult'
+import type { KnowledgeType, HOMEINFO_ROW } from '@/types/consult.d.ts'
 import { reqKnwledge } from '@/api/consult/index'
 import KnowledgeCard from './know-leage-card.vue'
-import type { REQ_KNOWLEDGE_DATA } from '@/types/consult'
+import type { REQ_KNOWLEDGE_DATA } from '@/types/consult.d.ts'
 const props = defineProps<{
   type: KnowledgeType
 }>()

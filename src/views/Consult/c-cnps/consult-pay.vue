@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { reqOrderInfo, reqOrder } from '@/api/consult'
 import { useConsultStore } from '@/stores/modules/consult'
-import type { ConsultOrderPreData, PartialConsult } from '@/types/consult'
+import type { ConsultOrderPreData, PartialConsult } from '@/types/consult.d.ts'
 import { showConfirmDialog, showDialog, showFailToast } from 'vant'
 import { useRouter } from 'vue-router'
 import CpPaySheet from '@/components/cp-pay-sheet/index.vue'

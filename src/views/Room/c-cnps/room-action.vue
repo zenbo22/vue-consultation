@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { OrderType } from '@/enum'
 import type { UploaderAfterRead } from 'vant/lib/uploader/types'
-import type { Image } from '@/types/consult'
+import type { Image } from '@/types/consult.d.ts'
 import { reqImg } from '@/api/consult'
 import { showLoadingToast } from 'vant'
 const text = ref('')

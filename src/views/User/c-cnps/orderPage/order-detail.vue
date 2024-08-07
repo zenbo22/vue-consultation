@@ -59,7 +59,7 @@ onMounted(() => {
       <div
         class="card"
         v-else
-        @click="$router.push(`/order/logistics/${order?.id}`)"
+        @click="router.push(`/order/logistics/${order?.id}`)"
       >
         <div class="logistics">
           <p>{{ order.expressInfo.content }}</p>

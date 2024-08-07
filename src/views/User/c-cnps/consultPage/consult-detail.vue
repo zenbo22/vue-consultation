@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { reqAllOrderInfo } from '@/api/consult'
-import type { ConsultOrderItem } from '@/types/consult'
+import type { ConsultOrderItem } from '@/types/consult.d.ts'
 import { useRoute, useRouter } from 'vue-router'
 import { OrderType } from '@/enum'
 import { getConsultFlagText, getIllnessTimeText } from '@/utils/filter'
