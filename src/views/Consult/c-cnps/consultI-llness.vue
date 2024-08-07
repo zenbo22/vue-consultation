@@ -5,7 +5,7 @@ import { useConsultStore } from '@/stores/modules/consult';
 import { showConfirmDialog } from 'vant';
 import { useRouter } from 'vue-router';
 import type { ConsultIllness } from '@/types/consult';
-import { timeOptions, flagOptions } from '@/services/constants';
+// import { timeOptions, flagOptions } from '@/services/constants';
 import { v4 as uuidv4 } from 'uuid'; // 引入 uuid 库生成唯一标识符
 import { marked } from 'marked';
 
