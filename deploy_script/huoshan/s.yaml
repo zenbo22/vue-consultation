@@ -19,7 +19,7 @@ resources:
         RequestTimeout: 600
         Runtime: native/v1
         SourceType: image # 支持 image / zip
-        Source: dcc-cloud-cn-beijing.cr.volces.com/dcc-cloud/doctor-hao:0.0.1
+        Source: dcc-cloud-cn-beijing.cr.volces.com/dcc-cloud/doctor-hao:0.0.2
         MemoryMB: 16384
         Processor: cpu
       replicaLimit:

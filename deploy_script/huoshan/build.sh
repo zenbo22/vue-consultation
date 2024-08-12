@@ -1,7 +1,7 @@
 source ~/.bash_profile
 docker login --username=8945手机用户#iOFgyo@2101075811 dcc-cloud-cn-beijing.cr.volces.com --password=DCC2024cloud
-docker build -t  dcc-cloud-cn-beijing.cr.volces.com/dcc-cloud/doctor-hao:0.0.1 -f ../../Dockerfile_huoshan ../../
-docker push  dcc-cloud-cn-beijing.cr.volces.com/dcc-cloud/doctor-hao:0.0.1
+docker build -t  dcc-cloud-cn-beijing.cr.volces.com/dcc-cloud/doctor-hao:0.0.2 -f ../../Dockerfile_huoshan ../../
+docker push  dcc-cloud-cn-beijing.cr.volces.com/dcc-cloud/doctor-hao:0.0.2
 s deploy
 
 # https://www.easyclipai.com/?code=0950fabbda8b073ccaK69YlTmoVWrGQpuUVB_lf&state=&scopes=user_info,trial.whitelist
